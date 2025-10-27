@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block content %}
+<h4 class="mb-3">Drag & drop style columns (click buttons to move tasks)</h4>
+
+<div class="row">
+  {% for key, label in [("todo","To Do"), ("inprogress","In Progress"), ("done","Done")] %}
+  <div class="col-md-4">
+    <div class="card mb-3">
+      <div class="card-header bg-light">
+        <h5 class="mb-0">{{ label }}</h5>
+      </div>
+      <div class="card-body column-body">
+        {% for t in columns[key] %}
+        <div class="task-card mb-2 p-2 border rounded">
+          <h6>{{ t.title }}</h6>
+          <p class="small mb-1">{{ t.description }}</p>
+          <div class="d-flex justify-content-between align-items-center">
+            <small class="text-muted">#{{ t.id }}</small>
+            <div>
+              {% if key != 'todo' %}
+              <form method="post" action="{{ url_for('move_task', tid=t.id, status='todo') }}" style="display:inline">
+                <button class="btn btn-sm btn-outline-secondary">To Do</button>
+              </form>
+              {% endif %}
+              {% if key != 'inprogress' %}
+              <form method="post" action="{{ url_for('move_task', tid=t.id, status='inprogress') }}" style="display:inline">
+                <button class="btn btn-sm btn-outline-primary">In Progress</button>
+              </form>
+              {% endif %}
+              {% if key != 'done' %}
+              <form method="post" action="{{ url_for('move_task', tid=t.id, status='done') }}" style="display:inline">
+                <button class="btn btn-sm btn-outline-success">Done</button>
+              </form>
+              {% endif %}
+              <form method="post" action="{{ url_for('remove_task', tid=t.id) }}" style="display:inline" onsubmit="return confirm('Delete task?');">
+                <button class="btn btn-sm btn-outline-danger">Delete</button>
+              </form>
+            </div>
+          </div>
+        </div>
+        {% else %}
+        <p class="text-muted small">No tasks</p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}
